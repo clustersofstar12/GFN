@@ -33,7 +33,7 @@ class ModelNetTrainer(object):
         #batch_time = meter.TimeMeter(True)
         #epoch_time = meter.TimeMeter(True)
 
-        '''if self.model_name == 'view-gcn':
+        '''if self.model_name == 'view-gfn':
             total_num = sum(p.numel() for p in self.model.parameters())
             trainable_num = sum(q.numel() for q in self.model.parameters() if q.requires_grad)
             print('total', total_num)
@@ -58,7 +58,7 @@ class ModelNetTrainer(object):
             print('total', total_num)
             print('trainable', trainable_num)
 
-            if self.model_name == 'view-gcn':
+            if self.model_name == 'view-gfn':
                 '''if epoch == 20:
                     for param_group in self.optimizer.param_groups:
                         param_group['lr'] = 1e-4'''
@@ -96,10 +96,10 @@ class ModelNetTrainer(object):
             epoch_time = time.time()
             for i, data in enumerate(self.train_loader):
                 #batch_time.reset()
-                if self.model_name == 'view-gcn' and epoch == 0:
+                if self.model_name == 'view-gfn' and epoch == 0:
                     for param_group in self.optimizer.param_groups:
                         param_group['lr'] = lr * ((i + 1) / (len(rand_idx) // 20))
-                if self.model_name == 'view-gcn':
+                if self.model_name == 'view-gfn':
                     N, V, C, H, W = data[1].size()
                     in_data = Variable(data[1]).view(-1, C, H, W).cuda()
                 else:
@@ -110,7 +110,7 @@ class ModelNetTrainer(object):
                 self.optimizer.zero_grad()
 
                 batch_time = time.time()
-                if self.model_name == 'view-gcn':
+                if self.model_name == 'view-gfn':
                     out_data, y, adj, s1, z, adj1, s2, ft = self.model(in_data)
                     #print('batchtime %.6f' % batch_time.value())
                     '''if (epoch + 1) % 10 == 5:
@@ -138,10 +138,10 @@ class ModelNetTrainer(object):
                 #self.writer.add_scalar('train/train_overall_acc', acc, i_acc + i + 1)
                 #print('lr = ', str(param_group['lr']))
                 loss.backward()
-                if self.model_name == 'view-gcn':
+                if self.model_name == 'view-gfn':
                     clip_grad_norm_(self.model.parameters(), max_norm=3, norm_type=2)
 
-                '''if self.model_name == 'view-gcn':
+                '''if self.model_name == 'view-gfn':
                     for name, parms in self.model.named_parameters():
                         print('-->name:', name, '-->grad_requirs:', parms.requires_grad, ' -->grad_value:',parms.grad)'''
                 self.optimizer.step()
@@ -187,13 +187,13 @@ class ModelNetTrainer(object):
 
         for _, data in enumerate(self.val_loader, 0):
 
-            if self.model_name == 'view-gcn':
+            if self.model_name == 'view-gfn':
                 N, V, C, H, W = data[1].size()
                 in_data = Variable(data[1]).view(-1, C, H, W).cuda()
             else:  # 'svcnn'
                 in_data = Variable(data[1]).cuda()
             target = Variable(data[0]).cuda()
-            if self.model_name == 'view-gcn':
+            if self.model_name == 'view-gfn':
                 out_data, y, adj, s1, z, adj1, s2, ft = self.model(in_data)
                 link_loss1, ent_loss1 = dense_diff_pool(y, adj, s1, mask=None)
                 link_loss2, ent_loss2 = dense_diff_pool(z, adj1, s2, mask=None)
@@ -221,7 +221,7 @@ class ModelNetTrainer(object):
         acc = all_correct_points.float() / all_points
         val_overall_acc = acc.cpu().data.numpy()
         loss = all_loss / len(self.val_loader)
-        '''if self.model_name == 'view-gcn':
+        '''if self.model_name == 'view-gfn':
             map = retrieval_map.mAP()
             if map > best_map:
                 best_map = map

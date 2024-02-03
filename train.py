@@ -20,7 +20,7 @@ def seed_torch(seed=0):
     # torch.backends.cudnn.enabled = False
 # os.environ['CUDA_VISIBLE_DEVICES']='2'
 parser = argparse.ArgumentParser()
-parser.add_argument("-name", "--name", type=str, help="Name of the experiment", default="view-gcn")
+parser.add_argument("-name", "--name", type=str, help="Name of the experiment", default="view-gfn")
 parser.add_argument("-bs", "--batchSize", type=int, help="Batch size for the second stage", default=20)# it will be *12 images in each batch for mvcnn
 parser.add_argument("-num_models", type=int, help="number of models per class", default=0)
 parser.add_argument("-lr", type=float, help="learning rate", default=0.001)
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=args.batchSize, shuffle=False, num_workers=4)
     print('num_train_files: '+str(len(train_dataset.filepaths)))
     print('num_val_files: '+str(len(val_dataset.filepaths)))
-    trainer = ModelNetTrainer(cnet_2, train_loader, val_loader, optimizer, nn.CrossEntropyLoss(), 'view-gcn', log_dir, num_views=args.num_views)
+    trainer = ModelNetTrainer(cnet_2, train_loader, val_loader, optimizer, nn.CrossEntropyLoss(), 'view-gfn', log_dir, num_views=args.num_views)
     #use trained_view_GFN
     #cnet_2.load_state_dict(torch.load('trained.pth'))
     #trainer.update_validation_accuracy(1)
