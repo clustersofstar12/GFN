@@ -1,0 +1,1 @@
+{"name": "view-gcn", "batchSize": 20, "num_models": 0, "lr": 0.001, "weight_decay": 0.01, "no_pretraining": true, "cnn_name": "resnet18", "num_views": 12, "train_path": "/home/lhy/rgbd/*/train", "val_path": "/home/lhy/rgbd/*/test", "train": false}
